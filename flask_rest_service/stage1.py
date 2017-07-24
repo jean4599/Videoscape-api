@@ -133,7 +133,6 @@ def get_cluster(data):
 
 	result = json.loads(response.text)
 	clusters = result['cluster_list']
-	print(clusters)
 
 	dic = {}
 	for item in clusters:
@@ -169,6 +168,6 @@ def get_cluster(data):
 		dic[topic]['time'] = t[0]
 		dic[topic]['end'] = t[1]
 
-	print(dic)
+	#print(dic)
 	
 	return dic

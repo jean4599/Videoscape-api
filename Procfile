@@ -1,1 +1,1 @@
-api: python init.py
+api: gunicorn flask_rest_service:app
