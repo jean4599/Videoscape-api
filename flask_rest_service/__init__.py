@@ -10,17 +10,27 @@ firebase = firebase.FirebaseApplication('https://videoscape-b857c.firebaseio.com
 
 @app.route('/videoscape/api/<string:course>/process/stage2', methods=['GET'])
 def stage2(course):
-	data = firebase.get('/'+course+'/STAGE2/_user_saved_graphs', None)
-	result = get_links(data)
-	firebase.put('/'+course+'/STAGE2/', '_server_result', result)
+	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1/_user_saved_concepts', None)
+	data = firebase.get('/_courses/'+course+'/STAGE2/_user_saved_graphs', None)
+	result = get_links(stage1_nodes, data)
+	firebase.put('/_courses/'+course+'/STAGE2/', '_server_result', result)
 	return 'Stage2 process finished!\n'
 	
 
 @app.route('/videoscape/api/<string:course>/process/stage1', methods=['GET'])
 def stage1(course):
-	data = firebase.get('/'+course+'/STAGE1/_user_saved_concepts', None)
+	data = firebase.get('/_courses/'+course+'/STAGE1/_user_saved_concepts', None)
+	if data==None:
+		print('No data in firebase. Stage 1 end.')
+		return 'No data in firebase. Stage 1 end.'
 	result = get_cluster(data)
-	firebase.put('/'+course+'/STAGE1/', '_server_result', result)
+	aggregate_result = result[0]
+	stage_finished = result[1]
+
+	firebase.put('/_courses/'+course+'/STAGE1/', '_server_result', aggregate_result)
+	if stage_finished:
+		firebase.put('/_courses/'+course,'/stage', 2)
+		
 	return 'Stage1 process finished!\n'
 
 @app.route('/')

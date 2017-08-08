@@ -110,10 +110,12 @@ def get_time_period(time_list):
     return period
 
 def get_cluster(data):
-	
+	print('Stage1 process start...')
 	label_time_list = []
 	cluster_request = ''
+	concept_number_list = []
 	for user in data:
+		concept_number_list.append(len(data[user]))
 		for concept in data[user]:
 			if(concept['word']):
 				x = {
@@ -159,7 +161,9 @@ def get_cluster(data):
 			else: 
 				dic[cluster['label']] = cluster
 	
+	number_of_result = 0
 	for topic in dic:
+		number_of_result += 1
 		timestamp = dic[topic]['timestamp']
 		timestamp = sorted(timestamp)
 		# print('timestamp')
@@ -168,6 +172,14 @@ def get_cluster(data):
 		dic[topic]['time'] = t[0]
 		dic[topic]['end'] = t[1]
 
-	#print(dic)
+	#check whether to go to stage1
+	stage_finished = False
+	middle_point = concept_number_list[len(concept_number_list)/2]
+	print('Middle check point (# of concepts): '+ str(middle_point))
+	if number_of_result >= middle_point:
+		print('****From stage1 to stage2****')
+		stage_finished = True
 	
-	return dic
+	print('Stage1 process end!')
+	
+	return (dic,stage_finished)
