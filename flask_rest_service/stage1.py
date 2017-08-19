@@ -89,7 +89,7 @@ def find_majority(k):
 def get_time_period(time_list):
 	
     nparray = np.array(time_list)
-    result = DBSCAN().dbscan(nparray, 10, 2)
+    result = DBSCAN().dbscan(nparray, 15, 2)
     
     classlist = result['classlist']
     total_cluster = result['totalCluster']
@@ -109,8 +109,10 @@ def get_time_period(time_list):
     period = (begin, end)
     return period
 
+def comp(x,y):
+	return len(x[0])-len(y[0])
+
 def get_cluster(data):
-	print('Stage1 process start...')
 	label_time_list = []
 	cluster_request = ''
 	concept_number_list = []
@@ -124,11 +126,11 @@ def get_cluster(data):
 				}
 				label_time_list.append(x)
 				cluster_request += (concept['word'] + '\n')
-	
+	print(cluster_request)
 	print('Send request to meaningcloud')
 
 	url = "http://api.meaningcloud.com/clustering-1.1"
-	payload = "key=7669c401635f55cdeb14a325326ac695&lang=en&mode=dg&txt="+cluster_request
+	payload = "key=7669c401635f55cdeb14a325326ac695&lang=en&mode=tm&txt="+cluster_request
 	headers = {'content-type': 'application/x-www-form-urlencoded'}
 
 	response = requests.request("POST", url, data=payload, headers=headers)
@@ -142,7 +144,7 @@ def get_cluster(data):
 			cluster = {}
 			time = []
 			for index in item['document_list']:
-				label = item['document_list'][index]
+				label = item['document_list'][index].lower()
 				if(label in cluster):
 					cluster[label] = cluster[label]+1
 				else:
@@ -150,18 +152,22 @@ def get_cluster(data):
 					cluster[label] = 0
 				time.append(label_time_list[int(index)-1]['time'])
 
-			s = sorted(cluster.items(), key = operator.itemgetter(1), reverse = True)
-			# print(s)
+			s = sorted(cluster.items(), cmp = comp)
+			print(s)
+			s = sorted(s, key = operator.itemgetter(1), reverse = True)
+			print(s)
 			cluster = {
-				'label':s[0][0],
+				'label':s[0],
 				'timestamp':time
 			}
 			if cluster['label'] in dic:
-				dic[cluster['label']['timestamp']+cluster['timestamp']]
+				dic[cluster['label']]['timestamp'] += cluster['timestamp']
 			else: 
 				dic[cluster['label']] = cluster
 	
 	number_of_result = 0
+	result_data={}
+	i=0
 	for topic in dic:
 		number_of_result += 1
 		timestamp = dic[topic]['timestamp']
@@ -171,6 +177,9 @@ def get_cluster(data):
 		t = get_time_period(timestamp)
 		dic[topic]['time'] = t[0]
 		dic[topic]['end'] = t[1]
+		# change they resultkey to numeric
+		result_data[i] = dic[topic]
+		i+=1 
 
 	#check whether to go to stage1
 	stage_finished = False
@@ -180,6 +189,4 @@ def get_cluster(data):
 		print('****From stage1 to stage2****')
 		stage_finished = True
 	
-	print('Stage1 process end!')
-	
-	return (dic,stage_finished)
+	return (result_data,stage_finished)

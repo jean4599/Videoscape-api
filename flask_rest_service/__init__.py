@@ -19,18 +19,24 @@ def stage2(course):
 
 @app.route('/videoscape/api/<string:course>/process/stage1', methods=['GET'])
 def stage1(course):
+	print('Stage1 process start...')
 	data = firebase.get('/_courses/'+course+'/STAGE1/_user_saved_concepts', None)
 	if data==None:
 		print('No data in firebase. Stage 1 end.')
 		return 'No data in firebase. Stage 1 end.'
+	elif(len(data.keys())<5):
+		print('Data not sufficient. Stage 1 end')
+		return 'Data not sufficient. Stage 1 end';
+
 	result = get_cluster(data)
 	aggregate_result = result[0]
 	stage_finished = result[1]
-
+	print(aggregate_result)
 	firebase.put('/_courses/'+course+'/STAGE1/', '_server_result', aggregate_result)
 	if stage_finished:
 		firebase.put('/_courses/'+course,'/stage', 2)
-		
+	
+	print('Stage1 process end!')
 	return 'Stage1 process finished!\n'
 
 @app.route('/')
