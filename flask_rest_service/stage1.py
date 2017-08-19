@@ -157,7 +157,7 @@ def get_cluster(data):
 			s = sorted(s, key = operator.itemgetter(1), reverse = True)
 			print(s)
 			cluster = {
-				'label':s[0],
+				'label':s[0][0],
 				'timestamp':time
 			}
 			if cluster['label'] in dic:
