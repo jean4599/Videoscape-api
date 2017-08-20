@@ -130,7 +130,7 @@ def get_cluster(data):
 	print('Send request to meaningcloud')
 
 	url = "http://api.meaningcloud.com/clustering-1.1"
-	payload = "key=7669c401635f55cdeb14a325326ac695&lang=en&mode=dg&txt="+cluster_request
+	payload = "key=7669c401635f55cdeb14a325326ac695&lang=en&mode=tm&txt="+cluster_request
 	headers = {'content-type': 'application/x-www-form-urlencoded'}
 
 	response = requests.request("POST", url, data=payload, headers=headers)
