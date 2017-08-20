@@ -187,6 +187,6 @@ def get_cluster(data):
 	print('Middle check point (# of concepts): '+ str(middle_point))
 	if number_of_result >= middle_point:
 		print('****From stage1 to stage2****')
-		stage_finished = True
+		stage_finished = False
 	
 	return (result_data,stage_finished)
