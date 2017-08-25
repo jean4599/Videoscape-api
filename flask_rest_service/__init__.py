@@ -6,14 +6,14 @@ from firebase import firebase
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/videoscape/api/*": {"origins": "*"}})
-firebase = firebase.FirebaseApplication('https://videoscape-b857c.firebaseio.com', None)
+firebase = firebase.FirebaseApplication('https://beta-videoscape.firebaseio.com', None)
 
-@app.route('/videoscape/api/<string:course>/process/stage2', methods=['GET'])
-def stage2(course):
-	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1/_user_saved_concepts', None)
-	data = firebase.get('/_courses/'+course+'/STAGE2/_user_saved_graphs', None)
+@app.route('/videoscape/api/<string:course>/process/<string:stage>', methods=['GET'])
+def stage2(course,stage):
+	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE'+stage+'/_user_saved_concepts', None)
+	data = firebase.get('/_courses/'+course+'/STAGE'+stage+'/_user_saved_graphs', None)
 	result = get_links(stage1_nodes, data)
-	firebase.put('/_courses/'+course+'/STAGE2/', '_server_result', result)
+	firebase.put('/_courses/'+course+'/STAGE'+stage, '_server_result', result)
 	return 'Stage2 process finished!\n'
 	
 
