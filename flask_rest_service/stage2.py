@@ -1,10 +1,7 @@
-from firebase import firebase
 import requests
 import json
 import operator
 from stage1 import get_time_period
-
-firebase = firebase.FirebaseApplication('https://videoscape-b857c.firebaseio.com', None)
 
 nodes = []
 edges = []

@@ -10,10 +10,10 @@ firebase = firebase.FirebaseApplication('https://beta-videoscape.firebaseio.com'
 
 @app.route('/videoscape/api/<string:course>/process/<string:stage>', methods=['GET'])
 def stage2(course,stage):
-	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE'+stage+'/_user_saved_concepts', None)
-	data = firebase.get('/_courses/'+course+'/STAGE'+stage+'/_user_saved_graphs', None)
-	result = get_links(stage1_nodes, data)
-	firebase.put('/_courses/'+course+'/STAGE'+stage, '_server_result', result)
+	# stage1_nodes = firebase.get('/_courses/'+course+'/STAGE'+stage+'/_user_saved_concepts', None)
+	# data = firebase.get('/_courses/'+course+'/STAGE'+stage+'/_user_saved_graphs', None)
+	# result = get_links(stage1_nodes, data)
+	# firebase.put('/_courses/'+course+'/STAGE'+stage, '_server_result', result)
 	return 'Stage2 process finished!\n'
 	
 
