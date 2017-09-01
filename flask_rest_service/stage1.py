@@ -3,6 +3,7 @@ import json
 import operator
 import numpy as np
 import math
+from types import *
 
 class DBSCAN:
 	UNCLASSIFIED = False
@@ -112,22 +113,22 @@ def get_time_period(time_list):
 def comp(x,y):
 	return len(x[0])-len(y[0])
 
-def get_cluster(data):
+def get_cluster(data, param):
 	label_time_list = []
 	cluster_request = ''
 	concept_number_list = []
 	for user in data:
 		concept_number_list.append(len(data[user]))
 		for concept in data[user]:
-			if(concept['word']):
+			if(concept['label']):
 				x = {
-					'label':concept['word'],
+					'label':concept['label'],
 					'time':concept['time']
 				}
 				label_time_list.append(x)
-				cluster_request += (concept['word'] + '\n')
-	print(cluster_request)
+				cluster_request += (concept['label'] + '\n')
 	print('Send request to meaningcloud')
+	print(cluster_request)
 
 	url = "http://api.meaningcloud.com/clustering-1.1"
 	payload = "key=7669c401635f55cdeb14a325326ac695&lang=en&mode=tm&txt="+cluster_request
@@ -140,7 +141,7 @@ def get_cluster(data):
 
 	dic = {}
 	for item in clusters:
-		if (int(item['size']) > 2 and item['title']!='Other Topics'):
+		if (int(item['size']) > param and float(item['score'])>10 and item['title']!='Other Topics'):
 			cluster = {}
 			time = []
 			for index in item['document_list']:
@@ -150,7 +151,9 @@ def get_cluster(data):
 				else:
 					cluster[label] = {}
 					cluster[label] = 0
-				time.append(label_time_list[int(index)-1]['time'])
+				t=label_time_list[int(index)-1]['time']
+				if(type(t) is FloatType):
+					time.append(label_time_list[int(index)-1]['time'])
 
 			s = sorted(cluster.items(), cmp = comp)
 			print(s)
@@ -166,7 +169,7 @@ def get_cluster(data):
 				dic[cluster['label']] = cluster
 	
 	number_of_result = 0
-	result_data={}
+	result_data=[]
 	i=0
 	for topic in dic:
 		number_of_result += 1
@@ -177,16 +180,9 @@ def get_cluster(data):
 		t = get_time_period(timestamp)
 		dic[topic]['time'] = t[0]
 		dic[topic]['end'] = t[1]
+		dic[topic]['id'] = i
 		# change they resultkey to numeric
-		result_data[i] = dic[topic]
-		i+=1 
-
-	#check whether to go to stage1
-	stage_finished = False
-	middle_point = concept_number_list[len(concept_number_list)/2]
-	print('Middle check point (# of concepts): '+ str(middle_point))
-	if number_of_result >= middle_point:
-		print('****From stage1 to stage2****')
-		stage_finished = False
+		result_data.append(dic[topic])
+		i+=1
 	
-	return (result_data,stage_finished)
+	return (result_data)

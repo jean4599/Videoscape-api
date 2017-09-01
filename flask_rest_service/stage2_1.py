@@ -8,6 +8,9 @@ edges = []
 concept_dic = {} #{conceptID: couster label}
 dic = {} #{cluster label: }
 
+def comp(x,y):
+	return len(x[0])-len(y[0])
+
 def node_aggregate(stage1_nodes,nodes):
 	print('Process node...')
 
@@ -25,31 +28,37 @@ def node_aggregate(stage1_nodes,nodes):
 
 	result = json.loads(response.text)
 	clusters = result['cluster_list']
-
+	print('Get meaningcloud result')
+	
 	for item in clusters:
 		if (int(item['size']) > 2 and item['title']!='Other Topics'):
 			cluster = {}
 			time = []
+			
 			for index in item['document_list']:
-				label = item['document_list'][index]
+				label = item['document_list'][index].lower()
 				if(label in cluster):
 					cluster[label] = cluster[label]+1
 				else:
 					cluster[label] = 0
-				concept_dic[nodes[int(index)-1]['id']] = label
-				if(type(nodes[int(index)-1]['time']) is float):
-					time.append(nodes[int(index)-1]['time'])
-				if 'timestamp' in nodes[int(index)-1]:
-					time += nodes[int(index)-1]['timestamp']
 
-			s = sorted(cluster.items(), key = operator.itemgetter(1), reverse = True)
+				#For edge reference
+				concept_dic[nodes[int(index)-1]['id']] = label 
+
+				t=nodes[int(index)-1]['time']
+				if(type(t) is float):
+					time.append(nodes[int(index)-1]['time'])
+
+			s = sorted(cluster.items(), cmp = comp)
+			s = sorted(s, key = operator.itemgetter(1), reverse = True)
+			print(s)
 			cluster = {
 				'id':s[0][0],
 				'label':s[0][0],
 				'timestamp':time
 			}
 			if cluster['label'] in dic:
-				dic[cluster['label']]['timestamp']+=cluster['timestamp']
+				dic[cluster['label']]['timestamp'] += cluster['timestamp']
 			else: 
 				dic[cluster['label']] = cluster
 
@@ -65,7 +74,7 @@ def node_aggregate(stage1_nodes,nodes):
 	return result
 
 def edge_aggregate(edges):
-
+	print('process edges...')
 	edge_dic = {}
 	for edge in edges:
 		fr=''
@@ -91,7 +100,7 @@ def edge_aggregate(edges):
 	return result
 
 def get_links(stage1_nodes, data):
-	print('Stage2 start processing...')
+	print('Stage2_1 start processing...')
 
 	nodes = []
 	edges = []
