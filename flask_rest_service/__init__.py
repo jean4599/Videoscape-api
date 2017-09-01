@@ -78,7 +78,6 @@ def stage1_1(course):
 
 	result = get_cluster(data, 2)
 	aggregate_result = result
-	print(aggregate_result)
 	firebase.put('/_courses/'+course+'/STAGE1_1', '_server_result', aggregate_result)
 	if len(data.keys())>9:
 		firebase.put('/_courses/'+course,'/stage', '1_2')
@@ -96,7 +95,6 @@ def stage1_2(course):
 
 	result = get_cluster(data, 2)
 	aggregate_result = result
-	print(aggregate_result)
 	firebase.put('/_courses/'+course+'/STAGE1_2', '_server_result', aggregate_result)
 	if len(data.keys())>5:
 		firebase.put('/_courses/'+course,'/stage', '1_3')
@@ -114,7 +112,6 @@ def stage1_3(course):
 
 	result = get_cluster(data, 1)
 	aggregate_result = result
-	print(aggregate_result)
 	firebase.put('/_courses/'+course+'/STAGE1_3', '_server_result', aggregate_result)
 	if len(data.keys())>5:
 		firebase.put('/_courses/'+course,'/stage', '2_1')
