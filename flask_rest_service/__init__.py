@@ -14,7 +14,7 @@ firebase = firebase.FirebaseApplication('https://beta-videoscape.firebaseio.com/
 def stage3_1(course):
 	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1_3'+'/_server_result', None)
 	data = firebase.get('/_courses/'+course+'/STAGE3_1'+'/_user_saved_graphs', None)
-	if len(data.keys())<1:
+	if len(data.keys())<10:
 		print('stage3_1 not enough data')
 
 	else:
