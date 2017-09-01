@@ -8,7 +8,7 @@ from firebase import firebase
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/videoscape/api/*": {"origins": "*"}})
-firebase = firebase.FirebaseApplication('https://beta-videoscape.firebaseio.com/', None)
+firebase = firebase.FirebaseApplication('https://videoscape-b857c.firebaseio.com/', None)
 
 @app.route('/videoscape/api/<string:course>/process/stage3/3_1', methods=['GET'])
 def stage3_1(course):
