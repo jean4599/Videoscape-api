@@ -51,7 +51,6 @@ def node_aggregate(stage1_nodes,nodes):
 
 			s = sorted(cluster.items(), cmp = comp)
 			s = sorted(s, key = operator.itemgetter(1), reverse = True)
-			print(s)
 			cluster = {
 				'id':s[0][0],
 				'label':s[0][0],
