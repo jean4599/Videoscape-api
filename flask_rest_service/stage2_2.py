@@ -22,7 +22,7 @@ def get_links(stage1_nodes, data1, data2, param):
   edges = []
   link_aggr = {}
   link_list = []
-  
+
   for user in data1:
     if 'nodes' in data1[user] and 'edges' in data1[user]:
       for edge in data1[user]['edges']:
@@ -68,7 +68,7 @@ def get_links(stage1_nodes, data1, data2, param):
         link_list.append({
           'from':nfrom,
           'to':nto,
-          'width':link_aggr[start][end]-param
+          'width':(link_aggr[start][end]-param)/5 + 1
         })
   
   filtered_nodes=[]
