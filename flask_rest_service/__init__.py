@@ -10,15 +10,28 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"/videoscape/api/*": {"origins": "*"}})
 firebase = firebase.FirebaseApplication('https://videoscape-b857c.firebaseio.com/', None)
 
+@app.route('/videoscape/api/<string:course>/process/stage3/3_2', methods=['GET'])
+def stage3_2(course):
+	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1_3'+'/_server_result', None)
+	data = firebase.get('/_courses/'+course+'/STAGE3_2'+'/_user_saved_graphs', None)
+	if len(data.keys())<6:
+		print('stage3_2 not enough data')
+
+	else:
+		result = stage3_1_getlinks(stage1_nodes, data, True)
+		firebase.put('/_courses/'+course+'/STAGE3_2', '_server_result', result)
+		firebase.put('/_courses/'+course,'/stage', 'finished')
+	return 'Stage3_2 process finished!\n'
+
 @app.route('/videoscape/api/<string:course>/process/stage3/3_1', methods=['GET'])
 def stage3_1(course):
 	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1_3'+'/_server_result', None)
 	data = firebase.get('/_courses/'+course+'/STAGE3_1'+'/_user_saved_graphs', None)
-	if len(data.keys())<10:
+	if len(data.keys())<6:
 		print('stage3_1 not enough data')
 
 	else:
-		result = stage3_1_getlinks(stage1_nodes, data)
+		result = stage3_1_getlinks(stage1_nodes, data, False)
 		firebase.put('/_courses/'+course+'/STAGE3_1', '_server_result', result)
 		firebase.put('/_courses/'+course,'/stage', '3_2')
 	return 'Stage3_1 process finished!\n'
@@ -56,7 +69,7 @@ def stage2_1(course):
 	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1_3'+'/_server_result', None)
 	data = firebase.get('/_courses/'+course+'/STAGE2_1'+'/_user_saved_graphs', None)
 	
-	if len(data.keys())<10:
+	if len(data.keys())<5:
 		print('stage2_1 not enough data')
 	else:
 		result = stage2_1_getlinks(stage1_nodes, data)

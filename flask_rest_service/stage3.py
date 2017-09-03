@@ -32,12 +32,13 @@ def aggregate_label(labels):
   s = sorted(dic.items(), key = operator.itemgetter(1), reverse = True)
   return s
 
-def get_links(stage1_nodes, data):
+def get_links(stage1_nodes, data, put_label):
   print('Stage3 start processing...')
 
   nodes = stage1_nodes
   edges = []
-  
+  link_aggr={}
+
   for user in data:
     if 'nodes' in data[user] and 'edges' in data[user]:
       for edge in data[user]['edges']:
@@ -68,12 +69,21 @@ def get_links(stage1_nodes, data):
         flag[nto]=1
 
         link_aggr[start][end]['label'] = aggregate_label(link_aggr[start][end]['label'])
-        link_list.append({
-          'from':nfrom,
-          'to':nto,
-          'width':link_aggr[start][end]['num']-2,
-          'labels':link_aggr[start][end]['label']
-        })
+        if(put_label):
+          link_list.append({
+            'from':nfrom,
+            'to':nto,
+            'width':link_aggr[start][end]['num']-2,
+            'labels':link_aggr[start][end]['label'],
+            'label':link_aggr[start][end]['label'][0][0]
+          })
+        else:
+          link_list.append({
+            'from':nfrom,
+            'to':nto,
+            'width':link_aggr[start][end]['num']-2,
+            'labels':link_aggr[start][end]['label']
+          })
   
   filtered_nodes=[]
   for n in nodes:
