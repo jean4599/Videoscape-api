@@ -5,11 +5,6 @@ import urllib
 import numpy as np
 import math
 
-concept_list = []
-link_list = []
-data_list = []
-link_aggr = {}
-
 def getLabel(list, id):
    for obj in list:
       if obj['id']==id:
@@ -37,6 +32,7 @@ def get_links(stage1_nodes, data, put_label):
 
   nodes = stage1_nodes
   edges = []
+  link_list = []
   link_aggr={}
 
   for user in data:

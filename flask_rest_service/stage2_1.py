@@ -101,6 +101,7 @@ def edge_aggregate(edges):
 def get_links(stage1_nodes, data):
 	print('Stage2_1 start processing...')
 
+	global nodes, edges, concept_dic, dic
 	nodes = []
 	edges = []
 	concept_dic = {} #{conceptID: couster label}
