@@ -41,7 +41,7 @@ def stage2_3(course):
 	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1_3'+'/_server_result', None)
 	data1 = firebase.get('/_courses/'+course+'/STAGE2_2'+'/_user_saved_graphs', None)
 	data2 = firebase.get('/_courses/'+course+'/STAGE2_3'+'/_user_saved_graphs', None)
-	if len(data2.keys())<10:
+	if len(data2.keys())<10: #10
 		print('stage2_3 not enough data')
 
 	else:
@@ -55,7 +55,7 @@ def stage2_2(course):
 	stage1_nodes = firebase.get('/_courses/'+course+'/STAGE1_3'+'/_server_result', None)
 	data1 = firebase.get('/_courses/'+course+'/STAGE2_1'+'/_user_saved_graphs', None)
 	data2 = firebase.get('/_courses/'+course+'/STAGE2_2'+'/_user_saved_graphs', None)
-	if len(data2.keys())<8:
+	if len(data2.keys())<8: #8
 		print(course+' stage2_2 not enough data')
 
 	else:

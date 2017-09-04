@@ -20,7 +20,9 @@ def aggregate_label(labels):
     return []
   dic={}
   for label in labels:
-    if(label in dic):
+    if(label == None):
+      continue
+    elif(label in dic):
       dic[label]+=1
     else:
       dic[label]=1
@@ -40,11 +42,13 @@ def get_links(stage1_nodes, data, put_label):
       for edge in data[user]['edges']:
         start = getLabel(data[user]['nodes'], edge['from'])
         end = getLabel(data[user]['nodes'], edge['to'])
+        if('label' not in edge):
+          edge['label']=None
         if(start==None or end==None):
            continue
         elif(start in link_aggr):
            if(end in link_aggr[start]):
-              link_aggr[start][end]['num'] += 1
+              link_aggr[start][end]['num'] += 1     
               link_aggr[start][end]['label'].append(edge['label'])
            else:
               link_aggr[start][end] = {'num':1, 'label':[edge['label']]}
@@ -65,13 +69,16 @@ def get_links(stage1_nodes, data, put_label):
         flag[nto]=1
 
         link_aggr[start][end]['label'] = aggregate_label(link_aggr[start][end]['label'])
+        first = link_aggr[start][end]['label'][0][0]
+        if(first==None):
+          first = link_aggr[start][end]['label'][1][0]
         if(put_label):
           link_list.append({
             'from':nfrom,
             'to':nto,
             'width':link_aggr[start][end]['num']-2,
             'labels':link_aggr[start][end]['label'],
-            'label':link_aggr[start][end]['label'][0][0]
+            'label':first
           })
         else:
           link_list.append({
